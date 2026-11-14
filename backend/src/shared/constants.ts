@@ -1,5 +1,6 @@
 export const EMAIL_DOMAINS = ["@uitm.edu.my", "@student.uitm.edu.my"] as const;
 export const PASSWORD_MIN = 8;
+export const PASSWORD_PBKDF2_ITERATIONS = 50_000;
 export const LOCK_AFTER = 5;
 export const LOCK_MINUTES = 15;
 export const IDLE_TIMEOUT_MIN = 30;

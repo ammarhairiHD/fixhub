@@ -11,7 +11,7 @@ const locations = JSON.parse(
 );
 const sqlFile = join(backendDir, ".wrangler/seed-data.sql");
 const password = "Password123";
-const passwordIterations = 100_000;
+const passwordIterations = 50_000;
 const statuses = [
   "Submitted",
   "Verified",
@@ -94,6 +94,26 @@ function insert(table, row) {
   return `INSERT INTO ${table} (${columns.join(", ")}) VALUES (${values.join(", ")}) ON CONFLICT DO NOTHING;`;
 }
 
+function insertSeedUser(row) {
+  const columns = Object.keys(row);
+  const values = columns.map((column) => quote(row[column]));
+  const updates = [
+    "full_name",
+    "password_hash",
+    "password_salt",
+    "password_iterations",
+    "role",
+    "status",
+    "must_change_password",
+    "failed_login_count",
+    "locked_until",
+    "updated_at",
+  ]
+    .map((column) => `${column} = excluded.${column}`)
+    .join(", ");
+  return `INSERT INTO users (${columns.join(", ")}) VALUES (${values.join(", ")}) ON CONFLICT(id) DO UPDATE SET ${updates};`;
+}
+
 async function hashPassword() {
   const salt = randomBytes(16);
   const key = await webcrypto.subtle.importKey(
@@ -148,7 +168,7 @@ function seedUsers(now) {
 
   return Promise.all(
     accounts.map(async (account) =>
-      insert("users", {
+      insertSeedUser({
         ...account,
         ...await hashPassword(),
         status: "Active",

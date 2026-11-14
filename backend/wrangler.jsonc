@@ -3,6 +3,9 @@
   "name": "fixhub-api",
   "main": "src/index.ts",
   "compatibility_date": "2025-09-06",
+  "limits": {
+    "cpu_ms": 10
+  },
   "vars": {
     "AI_CLASSIFIER_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
     "EMAIL_PROVIDER": "console"

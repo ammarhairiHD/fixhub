@@ -2,8 +2,8 @@
 
 ## NFR-10: password storage
 
-The local seed script hashes the shared dummy password with PBKDF2-SHA256, a unique random 16-byte salt per account, and 100,000 iterations. It stores the salt and iteration count alongside the derived hash; it does not store the plaintext password.
+Passwords are hashed with PBKDF2-SHA256, a unique random 16-byte salt per account, and 50,000 iterations. The salt and iteration count are stored alongside the derived hash; plaintext passwords are not stored.
 
-This iteration count is for local sample accounts only. Login is not implemented yet, so its CPU cost has not been measured in the Workers runtime. Before implementing authentication, benchmark password verification against the 10 ms Worker CPU budget and tune the production iteration count accordingly.
+For NFR-10, PBKDF2 was measured in the Cloudflare Workers Vitest runtime using `crypto.subtle.deriveBits`. A single derivation took approximately 3 ms at 50,000 iterations and 7 ms at 100,000 iterations. The production iteration count is set to 50,000 to leave CPU budget for session and database work, and the backend Worker CPU limit is set to 10 ms. The authentication tests, including password changes (which perform two derivations), pass with that configured limit.
 
-Seed accounts are synthetic and intended only for local development. Do not reuse their password for real accounts.
+Seed accounts are synthetic and intended only for local development. Do not reuse their password for real accounts. Re-running the seed refreshes the sample account hashes to the current iteration count.

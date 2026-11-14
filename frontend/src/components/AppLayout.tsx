@@ -1,6 +1,25 @@
-import { Link, Outlet } from "react-router-dom";
+import { useState } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import { logout } from "../api/auth";
+import { useAuth } from "../auth/AuthContext";
+import { roleHome } from "./AuthGuard";
 
 export function AppLayout() {
+  const { user, setUser } = useAuth();
+  const navigate = useNavigate();
+  const [logoutError, setLogoutError] = useState("");
+
+  async function signOut() {
+    setLogoutError("");
+    try {
+      await logout();
+      setUser(null);
+      navigate("/login", { replace: true });
+    } catch {
+      setLogoutError("Unable to sign out. Please try again.");
+    }
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <header className="border-b border-slate-200 bg-white">
@@ -10,12 +29,36 @@ export function AppLayout() {
           </Link>
 
           <nav
-            aria-label="Role-based navigation placeholder"
-            className="hidden items-center gap-5 text-sm text-slate-600 sm:flex"
+            aria-label="Main navigation"
+            className="flex items-center gap-3 text-sm text-slate-600 sm:gap-5"
           >
-            <span>Reporter</span>
-            <span>Technician</span>
-            <span>Administrator</span>
+            {user ? (
+              <>
+                <Link className="min-h-11 content-center font-medium text-brand-800" to={roleHome(user.role)}>
+                  {user.role === "REPORTER"
+                    ? "My requests"
+                    : user.role === "ADMIN"
+                      ? "Dashboard"
+                      : "My jobs"}
+                </Link>
+                <button
+                  className="min-h-11 rounded-md px-2 font-medium hover:bg-slate-100"
+                  onClick={() => void signOut()}
+                  type="button"
+                >
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link className="min-h-11 content-center font-medium" to="/login">
+                  Sign in
+                </Link>
+                <Link className="min-h-11 content-center font-medium text-brand-800" to="/register">
+                  Register
+                </Link>
+              </>
+            )}
           </nav>
 
           <button
@@ -42,6 +85,11 @@ export function AppLayout() {
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        {logoutError && (
+          <p className="mb-4 text-sm text-red-800" role="alert">
+            {logoutError}
+          </p>
+        )}
         <Outlet />
       </main>
     </div>

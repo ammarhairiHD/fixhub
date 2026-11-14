@@ -1,6 +1,6 @@
 # FixHub@uitm
 
-FixHub@uitm is a responsive prototype for reporting and tracking UiTM campus maintenance faults. The database schema and local sample data are in place; application workflows have not been implemented yet.
+FixHub@uitm is a responsive prototype for reporting and tracking UiTM campus maintenance faults. The database schema, synthetic local sample data, and UC-01 authentication workflows are implemented. Request reporting and maintenance workflows remain future phases.
 
 ## Requirements
 
@@ -41,7 +41,7 @@ Start the Worker API and Vite frontend together:
 npm run dev
 ```
 
-Open the Vite URL printed in the terminal (normally `http://localhost:5173`). The frontend sends `/api` requests to the local backend on port `8787`; the health page should report the API as healthy. The local Worker uses local development bindings and does not require the production D1 database ID, R2 bucket, or Workers AI service.
+Open the Vite URL printed in the terminal (normally `http://localhost:5173`). The frontend sends `/api` requests to the local backend on port `8787`; `/health` checks the API and `/login` is the authentication entry point. The local Worker uses local development bindings and does not require the production D1 database ID, R2 bucket, or Workers AI service.
 
 ## Database migrations and local sample data
 
