@@ -9,7 +9,9 @@
     "deploy": "wrangler deploy",
     "db:generate": "drizzle-kit generate --config drizzle.config.ts",
     "db:migrate": "wrangler d1 migrations apply DB --local --config wrangler.jsonc",
-    "db:migrate:remote": "wrangler d1 migrations apply DB --remote --config wrangler.jsonc"
+    "db:migrate:remote": "wrangler d1 migrations apply DB --remote --config wrangler.jsonc",
+    "db:seed": "node seed/seed.mjs",
+    "db:backfill-embeddings": "node scripts/backfill-embeddings.mjs"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.7.6",

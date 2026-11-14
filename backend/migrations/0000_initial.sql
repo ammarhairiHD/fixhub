@@ -1,1 +1,0 @@
--- Initial migration; application tables will be introduced with feature work.

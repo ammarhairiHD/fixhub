@@ -1,2 +1,4 @@
 # Local-only secrets go in backend/.dev.vars; this starter does not require any.
 # EMAIL_API_KEY=
+# CLOUDFLARE_ACCOUNT_ID=
+# CLOUDFLARE_API_TOKEN=

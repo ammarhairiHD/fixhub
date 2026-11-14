@@ -1,6 +1,6 @@
 # FixHub@uitm
 
-FixHub@uitm is a responsive prototype for reporting and tracking UiTM campus maintenance faults. This repository contains the initial monorepo foundation; application features have not been implemented yet.
+FixHub@uitm is a responsive prototype for reporting and tracking UiTM campus maintenance faults. The database schema and local sample data are in place; application workflows have not been implemented yet.
 
 ## Requirements
 
@@ -43,12 +43,12 @@ npm run dev
 
 Open the Vite URL printed in the terminal (normally `http://localhost:5173`). The frontend sends `/api` requests to the local backend on port `8787`; the health page should report the API as healthy. The local Worker uses local development bindings and does not require the production D1 database ID, R2 bucket, or Workers AI service.
 
-## Database migrations
+## Database migrations and local sample data
 
-The database schema is intentionally empty until feature work begins. SQL migrations live in `backend/migrations/`; apply them locally with:
+SQL migrations live in `backend/migrations/` and are generated from `backend/src/db/schema.ts`. Apply them locally with:
 
 ```sh
-npm run db:migrate --workspace=backend
+npm run db:migrate:local
 ```
 
 After updating the Drizzle schema, generate a migration with:
@@ -60,8 +60,24 @@ npm run db:generate --workspace=backend
 Review generated SQL before applying it. Apply migrations to the production database only when ready:
 
 ```sh
-npm run db:migrate:remote --workspace=backend
+npm run db:migrate:remote
 ```
+
+Seed only the local D1 database with dummy accounts, 50 sample locations and 300 sample requests:
+
+```sh
+npm run db:seed
+```
+
+Seed accounts use `seed.admin@uitm.edu.my`, `seed.technician01@uitm.edu.my` through `seed.technician03@uitm.edu.my`, and `seed.reporter01@student.uitm.edu.my` through `seed.reporter05@student.uitm.edu.my`. Their shared password is `Password123`; staff accounts require a password change on first login. These are synthetic accounts, and the script stores only PBKDF2-SHA256 hashes with individual salts. The seed is repeatable and does not create sessions or photos.
+
+The seed leaves `requests.embedding` null. Once Cloudflare API credentials are available in `backend/.dev.vars`, backfill a batch of embeddings using Workers AI `@cf/baai/bge-m3`:
+
+```sh
+npm run db:backfill-embeddings
+```
+
+The backfill defaults to 10 requests per run; set `EMBEDDING_BATCH_SIZE` to a value from 1 to 50 to adjust it. It sends only request descriptions to the embedding model and updates the local D1 database.
 
 ## Build, test, and deploy
 
