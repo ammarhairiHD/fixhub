@@ -1,0 +1,32 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fixhub-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-09-06",
+  "vars": {
+    "AI_CLASSIFIER_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "EMAIL_PROVIDER": "console"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "fixhub-db",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "PHOTOS",
+      "bucket_name": "fixhub-photos"
+    }
+  ],
+  "ai": {
+    "binding": "AI"
+  },
+  "triggers": {
+    "crons": [
+      "0 0 * * *"
+    ]
+  }
+}

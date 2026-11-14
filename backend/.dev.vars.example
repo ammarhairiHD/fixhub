@@ -1,0 +1,2 @@
+# Local-only secrets go in backend/.dev.vars; this starter does not require any.
+# EMAIL_API_KEY=
